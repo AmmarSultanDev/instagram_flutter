@@ -7,6 +7,8 @@ import 'package:instagram_flutter/resources/storage_methods.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 
 class AuthMethods {
+  AuthMethods(this.context);
+  final BuildContext context;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   // sign up user
@@ -16,7 +18,6 @@ class AuthMethods {
     required String username,
     required String bio,
     required Uint8List file,
-    required BuildContext context,
   }) async {
     String res = 'Some error occured';
     try {
@@ -53,6 +54,37 @@ class AuthMethods {
         showSnackBar(context, res);
       } else if (e.code == 'weak-password') {
         res = 'The password provided is too weak.';
+        showSnackBar(context, res);
+      }
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  // logging in user
+  Future<String> loginUser({
+    required String email,
+    required String password,
+  }) async {
+    String res = 'Some error occured';
+    try {
+      if (email.isNotEmpty || password.isNotEmpty) {
+        await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+        res = 'Success';
+      } else {
+        res = 'Please fill all the fields';
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email') {
+        res = 'The email address is badly formatted.';
+        showSnackBar(context, res);
+      } else if (e.code == 'user-not-found') {
+        res = 'No user found for that email.';
+        showSnackBar(context, res);
+      } else if (e.code == 'wrong-password') {
+        res = 'Wrong password provided for that user.';
         showSnackBar(context, res);
       }
     } catch (err) {

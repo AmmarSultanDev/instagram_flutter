@@ -43,13 +43,12 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       _isLoading = true;
     });
-    String res = await AuthMethods().signUpUser(
+    String res = await AuthMethods(context).signUpUser(
       email: _emailController.text,
       password: _passwordController.text,
       username: _usernameController.text,
       bio: _bioController.text,
       file: _image!,
-      context: context,
     );
 
     setState(() {
