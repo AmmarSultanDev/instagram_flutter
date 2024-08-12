@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_flutter/responsive/mobile_screen_layout.dart';
 import 'package:instagram_flutter/responsive/responsive_layout.dart';
 import 'package:instagram_flutter/responsive/web_screen_layout.dart';
-import 'package:instagram_flutter/screens/home_screen.dart';
 import 'package:instagram_flutter/screens/signup_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/utils.dart';
@@ -33,16 +32,16 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       _isLoading = true;
     });
-    String res = await AuthMethods(context).loginUser(
+    String res = await AuthMethods().loginUser(
         email: _emailController.text, password: _passwordController.text);
-
-    if (res != 'Success') {
-      showSnackBar(context, res);
-    }
 
     setState(() {
       _isLoading = false;
     });
+
+    if (res != 'Success') {
+      showSnackBar(context, res);
+    }
 
     if (res == 'Success') {
       Navigator.of(context).pushReplacement(
