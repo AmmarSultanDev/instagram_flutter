@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:instagram_flutter/resources/storage_methods.dart';
+import 'package:instagram_flutter/utils/utils.dart';
 
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -46,34 +47,13 @@ class AuthMethods {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-email') {
         res = 'The email address is badly formatted.';
-        if (context != null) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('The email address is badly formatted.'),
-            ),
-          );
-        }
+        showSnackBar(context, res);
       } else if (e.code == 'email-already-in-use') {
         res = 'The account already exists for that email.';
-        if (context != null) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('The account already exists for that email.'),
-            ),
-          );
-        }
+        showSnackBar(context, res);
       } else if (e.code == 'weak-password') {
         res = 'The password provided is too weak.';
-        if (context != null) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('The password provided is too weak.'),
-            ),
-          );
-        }
+        showSnackBar(context, res);
       }
     } catch (err) {
       res = err.toString();

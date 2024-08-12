@@ -21,6 +21,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   Uint8List? _image;
+  bool 
+
   @override
   void dispose() {
     super.dispose();
@@ -35,6 +37,21 @@ class _SignupScreenState extends State<SignupScreen> {
     setState(() {
       _image = im;
     });
+  }
+
+  void signUpUser() async {
+    String res = await AuthMethods().signUpUser(
+      email: _emailController.text,
+      password: _passwordController.text,
+      username: _usernameController.text,
+      bio: _bioController.text,
+      file: _image!,
+      context: context,
+    );
+
+    if (res != 'Success') {
+      showSnackBar(context, res);
+    }
   }
 
   @override
@@ -75,9 +92,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     bottom: -10,
                     left: 80,
                     child: IconButton(
-                      onPressed: () {
-                        selectImage();
-                      },
+                      onPressed: selectImage,
                       icon: Icon(Icons.add_a_photo),
                     ),
                   )
@@ -112,16 +127,7 @@ class _SignupScreenState extends State<SignupScreen> {
               const SizedBox(height: 24),
               // login button
               InkWell(
-                onTap: () {
-                  AuthMethods().signUpUser(
-                    email: _emailController.text,
-                    password: _passwordController.text,
-                    username: _usernameController.text,
-                    bio: _bioController.text,
-                    file: _image!,
-                    context: context,
-                  );
-                },
+                onTap: signUpUser,
                 child: Container(
                   width: double.infinity,
                   alignment: Alignment.center,
