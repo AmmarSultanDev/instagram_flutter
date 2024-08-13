@@ -20,12 +20,16 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostScreenState extends State<AddPostScreen> {
   Uint8List? _file;
   final TextEditingController _descriptionController = TextEditingController();
+  bool _isLoading = false;
 
   void _postImage(
     String uid,
     String username,
     String profileImage,
   ) async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       String res = await FirestoreMethods().uploadPost(
         _descriptionController.text,
@@ -36,9 +40,16 @@ class _AddPostScreenState extends State<AddPostScreen> {
       );
 
       if (res == 'Success') {
+        setState(() {
+          _isLoading = false;
+        });
+        clearImage();
         showSnackBar(context, 'Posted!');
         Navigator.of(context).pop();
       } else {
+        setState(() {
+          _isLoading = false;
+        });
         showSnackBar(context, res);
       }
     } on Exception catch (e) {
@@ -91,6 +102,12 @@ class _AddPostScreenState extends State<AddPostScreen> {
         });
   }
 
+  void clearImage() {
+    setState(() {
+      _file = null;
+    });
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -106,14 +123,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
         ? Center(
             child: IconButton(
               onPressed: () => _selectImage(context),
-              icon: const Icon(Icons.upload),
+              icon: const Icon(
+                Icons.upload,
+                color: primaryColor,
+              ),
             ),
           )
         : Scaffold(
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
-                  onPressed: () {}, icon: const Icon(Icons.arrow_back)),
+                  onPressed: clearImage, icon: const Icon(Icons.arrow_back)),
               title: const Text('Post to'),
               centerTitle: false,
               actions: [
@@ -135,6 +155,10 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ),
             body: Column(
               children: [
+                _isLoading
+                    ? const LinearProgressIndicator()
+                    : const Padding(padding: EdgeInsets.only(top: 0)),
+                const Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   crossAxisAlignment: CrossAxisAlignment.start,
