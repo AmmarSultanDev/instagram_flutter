@@ -5,7 +5,7 @@ class Post {
   final String description;
   final String postId;
   final String username;
-  final String datePublished;
+  final DateTime datePublished;
   final String postUrl;
   final String profileImage;
   final List<dynamic> likes;
