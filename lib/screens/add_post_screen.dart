@@ -43,9 +43,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
         setState(() {
           _isLoading = false;
         });
+        if (context.mounted) {
+          showSnackBar(context, 'Posted!');
+        }
+
         clearImage();
-        showSnackBar(context, 'Posted!');
-        Navigator.of(context).pop();
       } else {
         setState(() {
           _isLoading = false;
