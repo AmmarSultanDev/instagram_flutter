@@ -141,7 +141,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   children: [
                     CircleAvatar(
                       backgroundImage: user == null
-                          ? NetworkImage(defaultPostImage)
+                          ? const NetworkImage(defaultPostImage)
                           : NetworkImage(user.photoUrl),
                     ),
                     SizedBox(
@@ -164,7 +164,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
                             decoration: BoxDecoration(
                               image: DecorationImage(
                                   image: _file == null
-                                      ? NetworkImage(defaultPostImage)
+                                      ? const NetworkImage(defaultPostImage)
                                       : MemoryImage(_file!),
                                   fit: BoxFit.fill,
                                   alignment: FractionalOffset.topCenter),
