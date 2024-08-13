@@ -1,15 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_flutter/models/user.dart';
+import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/global_variables.dart';
+import 'package:instagram_flutter/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
-class PostCard extends StatelessWidget {
+class PostCard extends StatefulWidget {
   const PostCard({super.key, required this.snap});
 
   final Map<String, dynamic> snap;
 
   @override
+  State<PostCard> createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+  bool isLikeAnimating = false;
+
+  @override
   Widget build(BuildContext context) {
+    final User? user = Provider.of<UserProvider>(context).getUser;
     return Container(
       color: mobileBackgroundColor,
       padding: const EdgeInsets.symmetric(vertical: 10),
@@ -25,8 +37,8 @@ class PostCard extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 16,
-                  backgroundImage:
-                      NetworkImage(snap['profileImage'] ?? defaultProfilePic),
+                  backgroundImage: NetworkImage(
+                      widget.snap['profileImage'] ?? defaultProfilePic),
                 ),
                 Expanded(
                   child: Padding(
@@ -36,7 +48,7 @@ class PostCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          snap['username'] ?? 'Username',
+                          widget.snap['username'] ?? 'Username',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -79,30 +91,62 @@ class PostCard extends StatelessWidget {
             ),
           ),
           // body section
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.35,
-            width: double.infinity,
-            child: Image.network(snap['postUrl'] ?? defaultPostImage,
-                fit: BoxFit.cover),
+          GestureDetector(
+            onDoubleTap: () {
+              setState(() {
+                isLikeAnimating = true;
+              });
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  width: double.infinity,
+                  child: Image.network(
+                      widget.snap['postUrl'] ?? defaultPostImage,
+                      fit: BoxFit.cover),
+                ),
+                LikeAnimation(
+                  isAnimating: isLikeAnimating,
+                  duration: const Duration(milliseconds: 400),
+                  onEnd: () {
+                    setState(() {
+                      isLikeAnimating = true;
+                    });
+                  },
+                  child: const Icon(
+                    Icons.favorite,
+                    color: Colors.white,
+                    size: 120,
+                  ),
+                ),
+              ],
+            ),
           ),
           // footer section
           Row(
             children: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.favorite_border,
+              LikeAnimation(
+                isAnimating: widget.snap['likes'].contains(user?.uid),
+                smallLike: true,
+                child: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.favorite,
+                    color: Colors.red,
+                  ),
                 ),
               ),
               IconButton(
                 onPressed: () {},
-                icon: Icon(
+                icon: const Icon(
                   Icons.comment_outlined,
                 ),
               ),
               IconButton(
                 onPressed: () {},
-                icon: Icon(
+                icon: const Icon(
                   Icons.send,
                 ),
               ),
@@ -130,7 +174,7 @@ class PostCard extends StatelessWidget {
                       .textTheme
                       .bodyMedium!
                       .copyWith(fontWeight: FontWeight.w800),
-                  child: Text('${snap['likes'].length} likes',
+                  child: Text('${widget.snap['likes'].length} likes',
                       style: Theme.of(context).textTheme.bodyMedium),
                 ),
                 Container(
@@ -141,7 +185,7 @@ class PostCard extends StatelessWidget {
                       style: const TextStyle(color: primaryColor),
                       children: [
                         TextSpan(
-                          text: snap['username'] ?? 'Username',
+                          text: widget.snap['username'] ?? 'Username',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -150,7 +194,8 @@ class PostCard extends StatelessWidget {
                           text: ' ',
                         ),
                         TextSpan(
-                          text: '${snap['description'] ?? 'Description'}',
+                          text:
+                              '${widget.snap['description'] ?? 'Description'}',
                         ),
                       ],
                     ),
@@ -169,9 +214,10 @@ class PostCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Text(
-                    DateFormat.yMMMd().format(snap['datePublished'].toDate()) ??
+                    DateFormat.yMMMd()
+                            .format(widget.snap['datePublished'].toDate()) ??
                         'Date',
-                    style: TextStyle(fontSize: 16, color: secondaryColor),
+                    style: const TextStyle(fontSize: 16, color: secondaryColor),
                   ),
                 ),
               ],

@@ -16,7 +16,8 @@ class FeedScreen extends StatelessWidget {
         title: SvgPicture.asset(
           'assets/ic_instagram.svg',
           color: primaryColor,
-          height: 32,
+          height: 100,
+          fit: BoxFit.fitHeight,
         ),
         actions: [
           IconButton(
