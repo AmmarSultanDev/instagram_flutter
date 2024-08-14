@@ -7,9 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CommentCard extends StatefulWidget {
-  const CommentCard({super.key, required this.snap, required this.comment});
-
-  final Map<String, dynamic> snap;
+  const CommentCard({super.key, required this.comment});
   final Comment comment;
 
   @override
@@ -28,7 +26,7 @@ class _CommentCardState extends State<CommentCard> {
         children: [
           CircleAvatar(
             backgroundImage: widget.comment.profileImage == null
-                ? NetworkImage(defaultProfilePic)
+                ? Image.asset('assets/defaultProfileImage.png').image
                 : NetworkImage(widget.comment.profileImage),
             radius: 18,
           ),
