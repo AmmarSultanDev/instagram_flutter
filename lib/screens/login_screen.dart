@@ -40,7 +40,9 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (res != 'Success') {
-      showSnackBar(context, res);
+      if (context.mounted) {
+        showSnackBar(context, res);
+      }
     }
 
     if (res == 'Success') {

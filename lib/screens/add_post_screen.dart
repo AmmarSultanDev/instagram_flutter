@@ -52,10 +52,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
         setState(() {
           _isLoading = false;
         });
-        showSnackBar(context, res);
+        if (context.mounted) {
+          showSnackBar(context, res);
+        }
       }
     } on Exception catch (e) {
-      showSnackBar(context, e.toString());
+      if (context.mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 
