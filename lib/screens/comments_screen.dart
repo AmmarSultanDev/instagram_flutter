@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/global_variables.dart';
+import 'package:instagram_flutter/widgets/comment_card.dart';
 
 class CommentsScreen extends StatefulWidget {
   const CommentsScreen({super.key});
@@ -69,9 +70,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
           ),
         ),
       ),
-      body: const Center(
-        child: Text('Comments Screen'),
-      ),
+      body: CommentCard(),
     );
   }
 }
