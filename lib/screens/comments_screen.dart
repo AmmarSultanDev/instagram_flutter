@@ -142,12 +142,16 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 child: CircularProgressIndicator(),
               );
             }
-
+            // Retrun Text('No comments yet') if there are no comments
+            if (snapshot.data!.docs.isEmpty) {
+              return const Center(
+                child: Text('No comments yet'),
+              );
+            }
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) => CommentCard(
                 comment: Comment.fromSnap(snapshot.data!.docs[index]),
-                snap: widget.snap,
               ),
             );
           },
