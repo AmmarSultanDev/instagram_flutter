@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_flutter/models/user.dart';
+import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/utils/global_variables.dart';
+import 'package:provider/provider.dart';
 
 class CommentCard extends StatefulWidget {
-  const CommentCard({super.key});
+  const CommentCard({super.key, required this.snap});
+
+  final Map<String, dynamic> snap;
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -40,7 +45,9 @@ class _CommentCardState extends State<CommentCard> {
                           ),
                         ),
                         TextSpan(
-                          text: '    comment',
+                          text: widget.snap['comments'].length > 0
+                              ? '    ${widget.snap['comment'][0]}'
+                              : '    comment',
                         ),
                       ],
                     ),

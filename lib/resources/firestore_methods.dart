@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:instagram_flutter/models/comment.dart';
 import 'package:instagram_flutter/models/post.dart';
 import 'package:instagram_flutter/resources/storage_methods.dart';
 import 'package:uuid/uuid.dart';
@@ -61,5 +62,34 @@ class FirestoreMethods {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<String> postComment(String postId, Comment comment) async {
+    String res = 'Some error occured';
+    try {
+      if (comment.text.isNotEmpty) {
+        String commentId = const Uuid().v1();
+        Map<String, dynamic> commentData = {
+          'commentId': commentId,
+          'text': comment.text,
+          'uid': comment.uid,
+          'username': comment.username,
+          'profileImage': comment.profileImage,
+          'datePublished': DateTime.now(),
+        };
+        await _firestore
+            .collection('posts')
+            .doc(postId)
+            .collection('comments')
+            .doc(commentId)
+            .set(commentData);
+        res = 'Success';
+      } else {
+        res = 'Comment cannot be empty';
+      }
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
   }
 }
