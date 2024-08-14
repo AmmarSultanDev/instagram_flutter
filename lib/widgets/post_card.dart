@@ -153,7 +153,7 @@ class _PostCardState extends State<PostCard> {
                           Icons.favorite,
                           color: Colors.red,
                         )
-                      : Icon(Icons.favorite_border),
+                      : const Icon(Icons.favorite_border),
                 ),
               ),
               IconButton(
@@ -173,7 +173,7 @@ class _PostCardState extends State<PostCard> {
                 alignment: Alignment.bottomRight,
                 child: IconButton(
                   onPressed: () {},
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.bookmark_border,
                   ),
                 ),
@@ -223,7 +223,7 @@ class _PostCardState extends State<PostCard> {
                   onTap: () {},
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Text(
+                    child: const Text(
                       'View all 200 comments',
                       style: TextStyle(fontSize: 16, color: secondaryColor),
                     ),

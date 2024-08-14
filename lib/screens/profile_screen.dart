@@ -9,7 +9,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: IconButton(
-        icon: Icon(Icons.logout),
+        icon: const Icon(Icons.logout),
         onPressed: () {
           AuthMethods().logOut();
           Navigator.of(context).pushReplacement(
