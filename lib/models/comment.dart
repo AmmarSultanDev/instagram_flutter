@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Comment {
   String commentId;
   final String text;
@@ -19,20 +21,22 @@ class Comment {
     required this.postId, // Added parameter
   });
 
-  factory Comment.fromMap(Map<String, dynamic> map) {
+  static Comment fromSnap(DocumentSnapshot snap) {
+    var snapshot = snap.data() as Map<String, dynamic>;
+
     return Comment(
-      commentId: map['commentId'],
-      text: map['text'],
-      uid: map['uid'],
-      username: map['username'],
-      profileImage: map['profileImage'],
-      datePublished: map['datePublished'].toDate(),
-      likes: map['likes'],
-      postId: map['postId'], // Added assignment
+      commentId: snapshot['commentId'],
+      text: snapshot['text'],
+      uid: snapshot['uid'],
+      username: snapshot['username'],
+      profileImage: snapshot['profileImage'],
+      datePublished: snapshot['datePublished'].toDate(),
+      likes: snapshot['likes'],
+      postId: snapshot['postId'], // Added property
     );
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toJson() {
     return {
       'commentId': commentId,
       'text': text,

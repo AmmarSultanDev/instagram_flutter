@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_flutter/models/comment.dart';
 import 'package:instagram_flutter/models/user.dart';
@@ -38,8 +39,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
       likes: [],
     );
 
-    String res =
-        await FirestoreMethods().postComment(widget.snap['postId'], comment);
+    String res = await FirestoreMethods().postComment(comment);
 
     setState(() {
       isCommenting = false;
@@ -66,72 +66,91 @@ class _CommentsScreenState extends State<CommentsScreen> {
   Widget build(BuildContext context) {
     final User? user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Comments'),
-        backgroundColor: mobileBackgroundColor,
-        centerTitle: false,
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          height: kToolbarHeight,
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          padding: const EdgeInsets.only(
-            left: 16,
-            right: 8,
-          ),
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundImage: user!.photoUrl == null
-                    ? const NetworkImage(defaultProfilePic)
-                    : NetworkImage(user!.photoUrl),
-                radius: 18,
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 8.0,
-                  ),
-                  child: TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(
-                      hintText: user!.username == null
-                          ? 'comment as username'
-                          : 'comment as ${user!.username}',
-                      border: InputBorder.none,
+        appBar: AppBar(
+          title: const Text('Comments'),
+          backgroundColor: mobileBackgroundColor,
+          centerTitle: false,
+        ),
+        bottomNavigationBar: SafeArea(
+          child: Container(
+            height: kToolbarHeight,
+            margin: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            padding: const EdgeInsets.only(
+              left: 16,
+              right: 8,
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundImage: user!.photoUrl == null
+                      ? const NetworkImage(defaultProfilePic)
+                      : NetworkImage(user!.photoUrl),
+                  radius: 18,
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 8.0,
+                    ),
+                    child: TextField(
+                      controller: _commentController,
+                      decoration: InputDecoration(
+                        hintText: user!.username == null
+                            ? 'comment as username'
+                            : 'comment as ${user!.username}',
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              InkWell(
-                onTap: () => _postComment(user),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 8,
-                  ),
-                  child: isCommenting
-                      ? Center(
-                          child: CircularProgressIndicator(),
-                        )
-                      : const Text(
-                          'Post',
-                          style: TextStyle(
-                            color: blueColor,
+                InkWell(
+                  onTap: () => _postComment(user),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 8,
+                    ),
+                    child: isCommenting
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : const Text(
+                            'Post',
+                            style: TextStyle(
+                              color: blueColor,
+                            ),
                           ),
-                        ),
+                  ),
                 ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-      body: CommentCard(
-        snap: widget.snap,
-      ),
-    );
+        body: StreamBuilder(
+          stream: FirebaseFirestore.instance
+              .collection('posts')
+              .doc(widget.snap['postId'])
+              .collection('comments')
+              .snapshots(),
+          builder: (context,
+              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+
+            return ListView.builder(
+              itemCount: snapshot.data!.docs.length,
+              itemBuilder: (context, index) => CommentCard(
+                comment: Comment.fromSnap(snapshot.data!.docs[index]),
+                snap: widget.snap,
+              ),
+            );
+          },
+        ));
   }
 }

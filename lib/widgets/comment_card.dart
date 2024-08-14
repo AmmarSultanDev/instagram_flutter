@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_flutter/models/comment.dart';
 import 'package:instagram_flutter/models/user.dart';
 import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/utils/global_variables.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CommentCard extends StatefulWidget {
-  const CommentCard({super.key, required this.snap});
+  const CommentCard({super.key, required this.snap, required this.comment});
 
   final Map<String, dynamic> snap;
+  final Comment comment;
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -24,7 +27,9 @@ class _CommentCardState extends State<CommentCard> {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: NetworkImage(defaultProfilePic),
+            backgroundImage: widget.comment.profileImage == null
+                ? NetworkImage(defaultProfilePic)
+                : NetworkImage(widget.comment.profileImage),
             radius: 18,
           ),
           const SizedBox(width: 16),
@@ -39,14 +44,14 @@ class _CommentCardState extends State<CommentCard> {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'username',
+                          text: widget.comment.username ?? 'username',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         TextSpan(
-                          text: widget.snap['comments'].length > 0
-                              ? '    ${widget.snap['comment'][0]}'
+                          text: widget.comment.text != null
+                              ? '    ${widget.comment.text}'
                               : '    comment',
                         ),
                       ],
@@ -55,7 +60,8 @@ class _CommentCardState extends State<CommentCard> {
                   Padding(
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
-                      '14 Aug 2024',
+                      DateFormat.yMMMd().format(widget.comment.datePublished) ??
+                          '14 Aug 2024',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,

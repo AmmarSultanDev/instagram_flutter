@@ -64,22 +64,24 @@ class FirestoreMethods {
     }
   }
 
-  Future<String> postComment(String postId, Comment comment) async {
+  Future<String> postComment(Comment comment) async {
     String res = 'Some error occured';
     try {
       if (comment.text.isNotEmpty) {
         String commentId = const Uuid().v1();
         Map<String, dynamic> commentData = {
+          'postId': comment.postId,
           'commentId': commentId,
           'text': comment.text,
           'uid': comment.uid,
           'username': comment.username,
           'profileImage': comment.profileImage,
           'datePublished': DateTime.now(),
+          'likes': comment.likes,
         };
         await _firestore
             .collection('posts')
-            .doc(postId)
+            .doc(comment.postId)
             .collection('comments')
             .doc(commentId)
             .set(commentData);
