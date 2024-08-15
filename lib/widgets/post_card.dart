@@ -37,11 +37,11 @@ class _PostCardState extends State<PostCard> {
           .collection('comments')
           .get();
 
-      setState(() {
-        if (context.mounted) {
+      if (context.mounted) {
+        setState(() {
           commentLen = snapShot.docs.length;
-        }
-      });
+        });
+      }
     } on Exception {
       // TODO
     }
