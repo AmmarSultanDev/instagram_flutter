@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_flutter/models/comment.dart';
 import 'package:instagram_flutter/models/user.dart';
 import 'package:instagram_flutter/providers/user_provider.dart';
+import 'package:instagram_flutter/resources/firestore_methods.dart';
 import 'package:instagram_flutter/utils/global_variables.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -73,9 +74,23 @@ class _CommentCardState extends State<CommentCard> {
           Container(
             padding: const EdgeInsets.all(8),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () async {
+                FirestoreMethods().likeComment(
+                  widget.comment.postId,
+                  widget.comment.commentId,
+                  Provider.of<UserProvider>(context, listen: false)
+                      .getUser!
+                      .uid,
+                  widget.comment.likes,
+                );
+              },
               icon: Icon(
-                Icons.favorite_border,
+                widget.comment.likes.contains(
+                        Provider.of<UserProvider>(context, listen: false)
+                            .getUser!
+                            .uid)
+                    ? Icons.favorite
+                    : Icons.favorite_border,
                 size: 16,
               ),
             ),

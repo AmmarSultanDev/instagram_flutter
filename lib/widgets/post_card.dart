@@ -38,7 +38,9 @@ class _PostCardState extends State<PostCard> {
           .get();
 
       setState(() {
-        commentLen = snapShot.docs.length;
+        if (context.mounted) {
+          commentLen = snapShot.docs.length;
+        }
       });
     } on Exception catch (e) {
       // TODO
@@ -96,8 +98,13 @@ class _PostCardState extends State<PostCard> {
                           ]
                               .map(
                                 (e) => InkWell(
-                                  onTap: () {
-                                    // TODO: implement delete post
+                                  onTap: () async {
+                                    if (e == 'Delete') {
+                                      await FirestoreMethods().deletePost(
+                                        widget.snap['postId'],
+                                      );
+                                      Navigator.of(context).pop();
+                                    }
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
