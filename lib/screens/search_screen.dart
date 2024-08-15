@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_flutter/models/user.dart';
+import 'package:instagram_flutter/screens/profile_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -38,7 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
           },
         ),
       ),
-      body: isShowUsers
+      body: isShowUsers && _searchController.text.isNotEmpty
           ? FutureBuilder(
               future: FirebaseFirestore.instance
                   .collection('users')
@@ -62,14 +64,25 @@ class _SearchScreenState extends State<SearchScreen> {
                   return ListView.builder(
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: NetworkImage(
-                            snapshot.data!.docs[index]['photoUrl'],
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ProfileScreen(
+                                user: User.fromSnap(snapshot.data!.docs[index]),
+                              ),
+                            ),
+                          );
+                        },
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(
+                              snapshot.data!.docs[index]['photoUrl'],
+                            ),
                           ),
-                        ),
-                        title: Text(
-                          snapshot.data!.docs[index]['username'],
+                          title: Text(
+                            snapshot.data!.docs[index]['username'],
+                          ),
                         ),
                       );
                     },
@@ -109,7 +122,11 @@ class _SearchScreenState extends State<SearchScreen> {
                       return StaggeredGridTile.count(
                         crossAxisCellCount: crossAxisCellCount,
                         mainAxisCellCount: mainAxisCellCount,
-                        child: Image.network(document['postUrl']),
+                        child: InkWell(
+                          child: Image.network(
+                            document['postUrl'],
+                          ),
+                        ),
                       );
                     }).toList(),
                   );
