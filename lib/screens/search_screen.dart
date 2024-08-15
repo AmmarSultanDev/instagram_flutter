@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_flutter/utils/colors.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -8,8 +10,75 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  bool isShowUsers = false;
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _searchController.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: mobileBackgroundColor,
+        title: TextFormField(
+          controller: _searchController,
+          decoration: const InputDecoration(
+            labelText: 'Search for a user',
+          ),
+          onFieldSubmitted: (String _) {
+            setState(() {
+              isShowUsers = true;
+            });
+          },
+        ),
+      ),
+      body: isShowUsers
+          ? FutureBuilder(
+              future: FirebaseFirestore.instance
+                  .collection('users')
+                  .where('username',
+                      isGreaterThanOrEqualTo: _searchController.text)
+                  .get(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text('Error: ${snapshot.error}'),
+                  );
+                }
+
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: NetworkImage(
+                            snapshot.data!.docs[index]['photoUrl'],
+                          ),
+                        ),
+                        title: Text(
+                          snapshot.data!.docs[index]['username'],
+                        ),
+                      );
+                    },
+                  );
+                }
+
+                return const SizedBox();
+              },
+            )
+          : const Text('Posts'),
+    );
   }
 }
