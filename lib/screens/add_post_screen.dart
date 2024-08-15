@@ -6,7 +6,6 @@ import 'package:instagram_flutter/models/user.dart' as model;
 import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/resources/firestore_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
-import 'package:instagram_flutter/utils/global_variables.dart';
 import 'package:instagram_flutter/utils/utils.dart';
 import 'package:provider/provider.dart';
 
@@ -43,23 +42,19 @@ class _AddPostScreenState extends State<AddPostScreen> {
         setState(() {
           _isLoading = false;
         });
-        if (context.mounted) {
-          showSnackBar(context, 'Posted!');
-        }
+
+        showSnackBar(context, 'Posted!');
 
         clearImage();
       } else {
         setState(() {
           _isLoading = false;
         });
-        if (context.mounted) {
-          showSnackBar(context, res);
-        }
+
+        showSnackBar(context, res);
       }
     } on Exception catch (e) {
-      if (context.mounted) {
-        showSnackBar(context, e.toString());
-      }
+      showSnackBar(context, e.toString());
     }
   }
 

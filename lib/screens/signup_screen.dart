@@ -59,9 +59,7 @@ class _SignupScreenState extends State<SignupScreen> {
     });
 
     if (res != 'Success') {
-      if (context.mounted) {
-        showSnackBar(context, res);
-      }
+      showSnackBar(context, res);
     }
 
     if (res == 'Success') {

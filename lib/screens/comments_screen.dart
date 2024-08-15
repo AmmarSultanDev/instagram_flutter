@@ -6,6 +6,7 @@ import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/resources/firestore_methods.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/utils/global_variables.dart';
+import 'package:instagram_flutter/utils/utils.dart';
 import 'package:instagram_flutter/widgets/comment_card.dart';
 import 'package:provider/provider.dart';
 
@@ -33,8 +34,8 @@ class _CommentsScreenState extends State<CommentsScreen> {
       postId: widget.snap['postId'],
       text: _commentController.text,
       uid: user!.uid,
-      username: user!.username,
-      profileImage: user!.photoUrl,
+      username: user.username,
+      profileImage: user.photoUrl,
       datePublished: DateTime.now(),
       likes: [],
     );
@@ -86,7 +87,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                 CircleAvatar(
                   backgroundImage: user!.photoUrl == null
                       ? const NetworkImage(defaultProfilePic)
-                      : NetworkImage(user!.photoUrl),
+                      : NetworkImage(user.photoUrl),
                   radius: 18,
                 ),
                 Expanded(
@@ -98,9 +99,9 @@ class _CommentsScreenState extends State<CommentsScreen> {
                     child: TextField(
                       controller: _commentController,
                       decoration: InputDecoration(
-                        hintText: user!.username == null
+                        hintText: user.username == null
                             ? 'comment as username'
-                            : 'comment as ${user!.username}',
+                            : 'comment as ${user.username}',
                         border: InputBorder.none,
                       ),
                     ),
@@ -151,8 +152,35 @@ class _CommentsScreenState extends State<CommentsScreen> {
             }
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) => CommentCard(
-                comment: Comment.fromSnap(snapshot.data!.docs[index]),
+              itemBuilder: (context, index) => Dismissible(
+                key: Key(snapshot.data!.docs[index].id),
+                background: Container(
+                  color: Colors.red.withOpacity(0.75),
+                  margin: EdgeInsets.symmetric(
+                      horizontal:
+                          MediaQuery.of(context).size.width * 0.1), // 10%
+                ),
+                onDismissed: (direction) async {
+                  print(snapshot.data!.docs[index].id);
+                  if (Comment.fromSnap(snapshot.data!.docs[index]).uid !=
+                      user.uid) {
+                    showSnackBar(context, 'You can only delete your comments');
+                    return;
+                  }
+                  String res = await FirestoreMethods().deleteComment(
+                    widget.snap['postId'],
+                    snapshot.data!.docs[index].id,
+                  );
+
+                  if (res == 'Success') {
+                    showSnackBar(context, 'comment deleted');
+                  } else {
+                    showSnackBar(context, res);
+                  }
+                },
+                child: CommentCard(
+                  comment: Comment.fromSnap(snapshot.data!.docs[index]),
+                ),
               ),
             );
           },

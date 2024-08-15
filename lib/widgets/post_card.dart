@@ -42,7 +42,7 @@ class _PostCardState extends State<PostCard> {
           commentLen = snapShot.docs.length;
         }
       });
-    } on Exception catch (e) {
+    } on Exception {
       // TODO
     }
   }

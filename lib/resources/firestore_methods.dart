@@ -140,4 +140,27 @@ class FirestoreMethods {
       print(e.toString());
     }
   }
+
+  // delete comment
+  Future<String> deleteComment(String postId, String commentId) async {
+    String res = 'Some error occured';
+
+    // check if the user is the owner of the comment
+
+    try {
+      await _firestore
+          .collection('posts')
+          .doc(postId)
+          .collection('comments')
+          .doc(commentId)
+          .delete();
+
+      res = 'Success';
+    } catch (e) {
+      print(e.toString());
+      res = e.toString();
+    }
+
+    return res;
+  }
 }
