@@ -40,7 +40,7 @@ class Post {
       description: snapshot['description'],
       postId: snapshot['postId'],
       username: snapshot['username'],
-      datePublished: snapshot['datePublished'],
+      datePublished: snapshot['datePublished'].toDate(),
       postUrl: snapshot['postUrl'],
       profileImage: snapshot['profileImage'],
       likes: snapshot['likes'],

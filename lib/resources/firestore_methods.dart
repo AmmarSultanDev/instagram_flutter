@@ -163,4 +163,24 @@ class FirestoreMethods {
 
     return res;
   }
+
+  //get user posts
+  Future<List<Post>> getUserPosts(String uid) async {
+    List<Post> posts = [];
+    try {
+      QuerySnapshot snapshot = await _firestore
+          .collection('posts')
+          .where('uid', isEqualTo: uid)
+          .orderBy('datePublished', descending: true)
+          .get();
+
+      for (QueryDocumentSnapshot doc in snapshot.docs) {
+        posts.add(Post.fromSnap(doc as DocumentSnapshot));
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    print(posts.length);
+    return posts;
+  }
 }

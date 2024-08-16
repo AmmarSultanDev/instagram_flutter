@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_flutter/models/post.dart';
 import 'package:instagram_flutter/models/user.dart';
 import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/resources/auth_methods.dart';
+import 'package:instagram_flutter/resources/firestore_methods.dart';
 import 'package:instagram_flutter/screens/login_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:instagram_flutter/widgets/follow_button.dart';
@@ -17,26 +19,33 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  List<Post> posts = [];
+
+  void getPosts() async {
+    // get posts from firestore
+
+    posts = await FirestoreMethods().getUserPosts(widget.user!.uid);
+
+    setState(() {});
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (widget.user == null) {
-      widget.user = Provider.of<UserProvider>(context, listen: false).getUser;
-    }
-    //widget.user ??= Provider.of<UserProvider>(context).getUser;
+    getPosts();
   }
 
   @override
   Widget build(BuildContext context) {
-    final User? user = Provider.of<UserProvider>(context).getUser;
+    final User? loggedInUser = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: mobileBackgroundColor,
-        title: user?.uid == widget.user!.uid
-            ? Text(user!.username)
+        title: loggedInUser?.uid == widget.user!.uid
+            ? Text(loggedInUser!.username)
             : Text(widget.user!.username),
-        actions: user?.uid == widget.user!.uid
+        actions: loggedInUser?.uid == widget.user!.uid
             ? [
                 IconButton(
                     icon: const Icon(Icons.exit_to_app),
@@ -74,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              buildStateColumn(0, 'Posts'),
+                              buildStateColumn(posts.length, 'Posts'),
                               buildStateColumn(0, 'Followers'),
                               buildStateColumn(0, 'Following'),
                             ],
