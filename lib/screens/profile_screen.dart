@@ -4,6 +4,7 @@ import 'package:instagram_flutter/providers/user_provider.dart';
 import 'package:instagram_flutter/resources/auth_methods.dart';
 import 'package:instagram_flutter/screens/login_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
+import 'package:instagram_flutter/widgets/follow_button.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -53,7 +54,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: ListView(
         children: [
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(4),
             child: Column(
               children: [
                 Row(
@@ -67,21 +68,51 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(width: 16),
                     Expanded(
                       flex: 1,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      child: Column(
                         children: [
-                          buildStateColumn(0, 'Posts'),
-                          buildStateColumn(0, 'Followers'),
-                          buildStateColumn(0, 'Following'),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              buildStateColumn(0, 'Posts'),
+                              buildStateColumn(0, 'Followers'),
+                              buildStateColumn(0, 'Following'),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              FollowButton(
+                                  backgroundColor: mobileBackgroundColor,
+                                  borderColor: Colors.grey,
+                                  text: 'EditProfile',
+                                  textColor: primaryColor)
+                            ],
+                          ),
                         ],
                       ),
-                    )
+                    ),
                   ],
-                )
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.only(top: 15),
+                  child: Text(
+                    'username',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.only(top: 1),
+                  child: Text(
+                    'bio',
+                  ),
+                ),
               ],
             ),
-          )
+          ),
+          const Divider(),
         ],
       ),
     );
