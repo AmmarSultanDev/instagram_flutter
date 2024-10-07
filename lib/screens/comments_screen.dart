@@ -115,7 +115,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                       horizontal: 8,
                     ),
                     child: isCommenting
-                        ? Center(
+                        ? const Center(
                             child: CircularProgressIndicator(),
                           )
                         : const Text(

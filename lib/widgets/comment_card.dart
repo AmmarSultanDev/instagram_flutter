@@ -42,7 +42,7 @@ class _CommentCardState extends State<CommentCard> {
                       children: [
                         TextSpan(
                           text: widget.comment.username ?? 'username',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -59,7 +59,7 @@ class _CommentCardState extends State<CommentCard> {
                     child: Text(
                       DateFormat.yMMMd().format(widget.comment.datePublished) ??
                           '14 Aug 2024',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
                       ),

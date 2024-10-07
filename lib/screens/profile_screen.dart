@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               buildStateColumn(0, 'Following'),
                             ],
                           ),
-                          Row(
+                          const Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               FollowButton(
@@ -106,7 +106,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(top: 15),
-                  child: Text(
+                  child: const Text(
                     'username',
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -114,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Container(
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(top: 1),
-                  child: Text(
+                  child: const Text(
                     'bio',
                   ),
                 ),
